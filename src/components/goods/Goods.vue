@@ -23,5 +23,5 @@ export default {
 			width: 80px
 			background: #f3f5f7
 		.goods-wrapper
-			flex: 1
+			flex: auto
 </style>
