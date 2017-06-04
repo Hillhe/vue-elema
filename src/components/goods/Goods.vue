@@ -2,7 +2,7 @@
   <div class="goods">
 		<div class="menu-wrapper" v-el:menu-wrap>
 			<ul>
-				<li v-for="item in goods" class="menu-item" :class="{'currentIndex': currentIndex===$index}" v-on:click="selectMenu($index, $event)">
+				<li v-for="item in goods" class="menu-item" :class="{'currentIndex': currentIndex===$index}" @click="selectMenu($index, $event)">
 					<span class="text">
 						<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
 					</span>
@@ -29,17 +29,23 @@
 									<span class="now">￥{{food.price}}</span>
 									<span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 								</div>
+								<div class="cart-wrapper">
+									<Cartcontrol :good="food"></Cartcontrol>
+								</div>
 							</div>
 						</li>
 					</ul>
 				</li>
 			</ul>
 		</div>
+		<Shopcart v-ref:shopcart :select-goods="selectGoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></Shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 	import BScroll from 'better-scroll'
+	import Shopcart from 'components/shopcart/Shopcart'
+	import Cartcontrol from 'components/cartcontrol/Cartcontrol'
 	const ERR_OK = 0
 	export default {
 		props: {
@@ -64,6 +70,20 @@
 					}
 				}
 				return 0
+			},
+			selectGoods() {
+				let goods = []
+				this.goods.forEach((good) => {
+					good.foods.forEach((food) => {
+						if (food.count) {
+							goods.push({
+								count: food.count,
+								price: food.price
+							})
+						}
+					})
+				})
+				return goods
 			}
 		},
 		created() {
@@ -85,6 +105,7 @@
 					click: true
 				})
 				this.goodsScroll = new BScroll(this.$els.goodsWrap, {
+					click: true,
 					probeType: 3
 				})
 				this.goodsScroll.on('scroll', (pos) => {
@@ -108,6 +129,18 @@
 				let goodList = this.$els.goodsWrap.getElementsByClassName('good-list-hook')
 				let el = goodList[index]
 				this.goodsScroll.scrollToElement(el, 300)
+			},
+			_drop(target) {
+				this.$refs.shopcart.drop(target)
+			}
+		},
+		components: {
+			Shopcart,
+			Cartcontrol
+		},
+		events: {
+			'cart-add'(target) {
+				this._drop(target)
 			}
 		}
 }
@@ -188,6 +221,7 @@
 					margin-right: 10px
 				.content
 					flex: 1
+					position: relative
 					.name
 						margin: 2px 0 8px 0
 						height: 14px
@@ -214,6 +248,10 @@
 							text-decoration: line-through
 							font-size: 10px
 							color: rgb(147,153,159)
+					.cart-wrapper
+						position: absolute
+						right: 0
+						bottom: -15px
 					.name,.desc
 						white-space: nowrap
 						overflow: hidden
