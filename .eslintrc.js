@@ -10,6 +10,23 @@ module.exports = {
   plugins: [
     'html'
   ],
+	"eslint.validate": [
+	   "javascript",
+	   "javascriptreact",
+	   "html",
+	   "vue"
+	],
+	"spaced-comment": ["error", "always", {
+	    "line": {
+	        "markers": ["/"],
+	        "exceptions": ["-", "+"]
+	    },
+	    "block": {
+	        "markers": ["!"],
+	        "exceptions": ["*"],
+	        "balanced": true
+	    }
+	}],
   // add your custom rules here
   'rules': {
     // allow paren-less arrow functions

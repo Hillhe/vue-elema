@@ -131,7 +131,9 @@
 				this.goodsScroll.scrollToElement(el, 300)
 			},
 			_drop(target) {
-				this.$refs.shopcart.drop(target)
+				this.$nextTick(() => {
+					this.$refs.shopcart.drop(target)
+				})
 			}
 		},
 		components: {
@@ -252,8 +254,4 @@
 						position: absolute
 						right: 0
 						bottom: -15px
-					.name,.desc
-						white-space: nowrap
-						overflow: hidden
-						text-overflow: ellipsis
 </style>
