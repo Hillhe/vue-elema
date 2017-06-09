@@ -76,10 +76,7 @@
 				this.goods.forEach((good) => {
 					good.foods.forEach((food) => {
 						if (food.count) {
-							goods.push({
-								count: food.count,
-								price: food.price
-							})
+							goods.push(food)
 						}
 					})
 				})

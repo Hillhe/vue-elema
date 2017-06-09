@@ -25,6 +25,7 @@
 					Vue.set(this.good, 'count', 1)
 				} else {
 					this.good.count++
+					console.log(this.good.count)
 				}
 				this.$dispatch('cart-add', event.target)
 			},
