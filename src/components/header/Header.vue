@@ -29,7 +29,7 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%">
     </div>
-		<div v-show="detailShow" class="detail" transition="fade">
+		<div v-show="detailShow" class="detail" transition="fade" v-el:detail>
 			<div class="detail-wrapper clear-fix">
 				<div class="detail-main">
 					<h1 class="name">{{seller.name}}</h1>
@@ -65,33 +65,33 @@
 </template>
 
 <script type="text/ecmascript-6">
-import Star from 'components/star/Star'
-export default {
-	props: {
-		seller: {
-			type: Object
-		}
-	},
-	data() {
-		return {
-			detailShow: false
-		}
-	},
-	methods: {
-		showDetail() {
-			this.detailShow = true
+	import Star from 'components/star/Star'
+	export default {
+		props: {
+			seller: {
+				type: Object
+			}
 		},
-		closeDetail() {
-			this.detailShow = false
+		data() {
+			return {
+				detailShow: false
+			}
+		},
+		methods: {
+			showDetail() {
+				this.detailShow = true
+			},
+			closeDetail() {
+				this.detailShow = false
+			}
+		},
+		created() {
+			this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+		},
+		components: {
+			Star
 		}
-	},
-	created() {
-		this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-	},
-	components: {
-		Star
 	}
-}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 	@import '../../common/stylus/mixin'

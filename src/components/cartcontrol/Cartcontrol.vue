@@ -1,10 +1,10 @@
 <template>
 	<div class="cartcontrol">
-		<div class="cart-decrease" v-show="good.count>0" @click="decrease" transition="move">
+		<div class="cart-decrease" v-show="good.count>0" @click.stop.prevent="decrease" transition="move">
 			<span class="inner icon-remove_circle_outline"></span>
 		</div>
 		<div class="cart-count" v-show="good.count">{{good.count}}</div>
-		<div class="cart-add icon-add_circle" @click="addCart"></div>
+		<div class="cart-add icon-add_circle" @click.stop.prevent="addCart"></div>
 	</div>
 </template>
 
@@ -25,7 +25,6 @@
 					Vue.set(this.good, 'count', 1)
 				} else {
 					this.good.count++
-					console.log(this.good.count)
 				}
 				this.$dispatch('cart-add', event.target)
 			},
