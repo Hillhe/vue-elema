@@ -21,4 +21,4 @@ router.map({
 	'/ratings': {component: Ratings}
 })
 router.start(app, '#app')
-router.go('/goods')
+router.go('/ratings')

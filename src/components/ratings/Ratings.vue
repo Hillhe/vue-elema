@@ -27,8 +27,8 @@
 			<Split></Split>
 			<div class="ratings-wrapper">
 				<rating-select :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="ratings"></rating-select>
-				<ul class="ratings-list">
-					<li v-for="rating in ratings">
+				<ul class="ratings-list" v-show="ratings.length && ratings">
+					<li v-for="rating in ratings" class="rating-item" v-show="needShow(rating.rateType, rating.text)">
 						<div class="avatar">
 							<img :src="rating.avatar" width="28" height="28">
 						</div>
@@ -36,10 +36,10 @@
 							<div class="rating-info">
 								<div class="user-wrapper">
 									<span class="username">{{rating.username}}</span>
-									<span class="ratetime">{{rating.rateTime}}</span>
+									<span class="ratetime">{{rating.rateTime | formatDate}}</span>
 								</div>
 								<div class="delivery-wrapper">
-									<Star :size="36" :score="rating.score"></Star>
+									<Star :size="24" :score="rating.score" class="star"></Star>
 									<span class="deliveryTime" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
 								</div>
 							</div>
@@ -61,6 +61,7 @@
 	import Split from 'components/split/Split'
 	import BScroll from 'better-scroll'
 	import RatingSelect from 'components/ratingSelect/RatingSelect'
+	import {formatDate} from 'common/js/date'
 
 	const ALL = 2
 	const ERR_OK = 0
@@ -89,10 +90,10 @@
 				if (response.code === ERR_OK) {
 					this.ratings = response.msg
 				}
-			})
-			this.$nextTick(() => {
-				this.scroll = new BScroll(this.$els.sellerRatings, {
-					click: true
+				this.$nextTick(() => {
+					this.scroll = new BScroll(this.$els.sellerRatings, {
+						click: true
+					})
 				})
 			})
 		},
@@ -100,6 +101,38 @@
 			Star,
 			Split,
 			'rating-select': RatingSelect
+		},
+		filters: {
+			formatDate(time) {
+				let date = new Date(time)
+				return formatDate(date, 'yyyy-MM-dd hh:mm')
+			}
+		},
+		events: {
+			'ratingtype.select'(type) {
+				this.selectType = type
+				this.$nextTick(() => {
+					this.scroll.refresh()
+				})
+			},
+			'content.toggle'(onlyContent) {
+				this.onlyContent = onlyContent
+				this.$nextTick(() => {
+					this.scroll.refresh()
+				})
+			}
+		},
+		methods: {
+			needShow(type, text) {
+				if (this.onlyContent && !text) {
+					return false
+				}
+				if (this.selectType === ALL) {
+					return true
+				} else {
+					return type === this.selectType
+				}
+			}
 		}
 	}
 </script>
@@ -169,4 +202,69 @@
 						font-size: 12px
 						line-height: 18px
 						color: rgb(147,153,159)
+		.ratings-wrapper
+			.ratings-list
+				padding: 0 18px
+				.rating-item
+					border-1px(rgba(7,17,27,0.1))
+					display: flex
+					padding: 18px 0
+					.avatar
+						flex: 0 0 28px
+						width: 28px
+						img
+							border-radius: 50%
+					.rating-content
+						flex: 1
+						margin-left: 12px
+						.rating-info
+							.user-wrapper
+								margin-bottom: 4px
+								.username
+									font-size: 10px
+									color: rgb(7,17,27)
+									line-height: 12px
+								.ratetime
+									float: right
+									font-size: 10px
+									font-weight: 200
+									color: rgb(147,153,159)
+									line-height: 12px
+							.delivery-wrapper
+								display: flex
+								margin-bottom: 6px
+								.star
+									display: inline-block
+									vertical-align: top
+								.deliveryTime
+									display: inline-block
+									vertical-align: top
+									font-size: 10px
+									font-weight: 200
+									color: rgb(147,153,159)
+									line-height: 12px
+									margin-left: 6px
+						.text
+							font-size: 12px
+							color: rgb(7,17,27)
+							line-height: 18px
+							margin-bottom: 8px
+						.recommend-wrapper
+							.icon-thumb_up,.icon-thumb_down
+								margin-right: 4px
+								line-height: 24px
+								font-size: 12px
+							.icon-thumb_up
+								color: rgb(0,160,220)
+							.icon-thumb_down
+								color: rgb(147,153,159)
+							.recommend-item
+								border: 1px solid rgba(7,17,27,0.1)
+								border-radius: 2px
+								background: #fff
+								padding: 2px 6px
+								font-size: 9px
+								color: rgb(147,153,159)
+								margin-right: 8px
+								margin-bottom: 8px
 </style>
